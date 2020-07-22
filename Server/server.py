@@ -170,6 +170,12 @@ def dbconnect(*args):
             return result[0]
         else:
             return False
+    elif args[0] == "showtestslist":
+        sql = f'SELECT TestNo, TestName FROM Tests'
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+        mycursor.close()
+        return result
     elif args[0] == "showmedslist":
         sql = f'SELECT MedID, MedName FROM Medicines'
         mycursor.execute(sql)
