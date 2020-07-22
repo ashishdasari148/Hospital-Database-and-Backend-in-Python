@@ -268,7 +268,7 @@ def dbconnect(*args):
         return True
     elif args[0] == "performtests":
         for i in args[2]:
-            sql = f'update testsprescribed set StatusofTest = \'Taken\' where AppointmentID = {args[1]} and TestNo = {i}'
+            sql = f'update testsprescribed set StatusofTest = \'TestTaken\' where AppointmentID = {args[1]} and TestNo = {i}'
             mycursor.execute(sql)
         mycursor.close()
         return True
