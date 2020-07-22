@@ -10,6 +10,8 @@ PORT = 5050
 MASTER_PASSWORD = "maaappalammabangaram"
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
+adminpassword = "RaashiKhanna"
+adminpassword = hashlib.md5(adminpassword.encode()).hexdigest()
 
 
 def dbconnect(*args):
@@ -102,6 +104,12 @@ def dbconnect(*args):
         else:
             mycursor.close()
             return False
+    elif args[0] == "adminlogin":
+        if args[1] == "appalamma":
+            if adminpassword == hashlib.md5(args[2].encode()).hexdigest():
+                return True
+            else:
+                return False
     elif args[0] == "patientdetails":
         sql = f'SELECT * FROM Patient WHERE PatientID = {args[1]}'
         mycursor.execute(sql)

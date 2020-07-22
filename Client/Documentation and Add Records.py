@@ -69,6 +69,8 @@ print(connectiontodb.transact("docsignup", "maaappalammabangaram", "Ashish Dasar
 # Doctor login
 print(connectiontodb.transact("doclogin", "ashishdasari148@gmail.com", "qwerty123"))
 
+# admin login
+print(connectiontodb.transact("adminlogin", "appalamma", "RaashiKhanna"))
 # get list of all departments
 print(connectiontodb.transact("appointmentdept"))
 
@@ -84,6 +86,8 @@ nextslot = connectiontodb.transact("nextslot", 1)
 # book slot parameters : "bookslot", PatientID, DocID, previously received nextslot
 # returns appointmentid on success, else False
 print(connectiontodb.transact("bookslot", 1, 1, nextslot))
+# showtestslist
+print(connectiontodb.transact("showtestslist"))
 # showmedslist
 print(connectiontodb.transact("showmedslist"))
 # prescribe meds parameters : "prescribemeds", appointmentid, list of [medid,quantity]
