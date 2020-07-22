@@ -229,7 +229,7 @@ def dbconnect(*args):
         mycursor.execute(sql)
         result = mycursor.fetchone()
         if result[0] is None and result[1] is not None:
-            sql = f'UPDATE Accomodation SET CheckOUT = NOW() WHERE RoomNo = AppointmentID = {args[1]}'
+            sql = f'UPDATE Accomodation SET CheckOUT = NOW() WHERE AppointmentID = {args[1]}'
             mycursor.execute(sql)
             sql = f'UPDATE RoomAvl SET Availability = \'True\' WHERE RoomNo = {result[1]}'
             mycursor.execute(sql)
