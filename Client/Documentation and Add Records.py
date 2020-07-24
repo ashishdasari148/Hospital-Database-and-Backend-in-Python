@@ -102,14 +102,14 @@ print(connectiontodb.transact("showroomavl"))
 print(connectiontodb.transact("bookroom", 1, 1))
 # checkout parameters : "checkoutroom", appointmentid
 print(connectiontodb.transact("checkoutroom", 1))
-# show PrescribedMeds by appointment id
-print(connectiontodb.transact("showPrescribedMeds", 1))
 # update IllnessName
 print(connectiontodb.transact("updateillnessname", 1, "Malaria"))
+# get record details
+print(connectiontodb.transact("record retrieve", 1))
 # medical shop give meds
 print(connectiontodb.transact("givemeds", 1, [[1, 1], [4, 1], [6, 2], [20, 3]]))
 # lab perform test
-print(connectiontodb.transact("performtests", 1, [1, 6]))
+print(connectiontodb.transact("performtests", 1, [1, 4, 6]))
 # upload test result
 f = open("C:/Users/ashis/Downloads/file-example_PDF_1MB.pdf", "rb")
 bstr = f.read()
@@ -131,8 +131,6 @@ print(connectiontodb.transact("docdetails", 1))
 print(connectiontodb.transact("patientrecords", 1))
 # get list of doctor records
 print(connectiontodb.transact("docrecords", 1))
-# get record details
-print(connectiontodb.transact("record retrieve", 1))
 
 
 # client disconnect

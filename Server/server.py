@@ -21,10 +21,10 @@ def dbconnect(*args):
         sql = f'SELECT AppointmentID, AppointmentTimestamp, Records.PatientID, Patient.PatientName, Records.DoctorID, Doctor.DocName, IllnessName FROM Records LEFT JOIN patient ON records.PatientID = patient.PatientID LEFT JOIN doctor ON records.DoctorID = doctor.DocID WHERE AppointmentID = {args[1]}'
         mycursor.execute(sql)
         result1 = mycursor.fetchone()
-        sql = f'SELECT TestName, TestCost, StatusofTest FROM testsprescribed LEFT JOIN Tests ON testsprescribed.testno = tests.testno WHERE AppointmentID = {args[1]}'
+        sql = f'SELECT testsprescribed.testno, TestName, TestCost, StatusofTest FROM testsprescribed LEFT JOIN Tests ON testsprescribed.testno = tests.testno WHERE AppointmentID = {args[1]}'
         mycursor.execute(sql)
         result2 = mycursor.fetchall()
-        sql = f'SELECT MedName, MedCost, Quantity FROM medsprescribed LEFT JOIN Medicines ON medsprescribed.medid = medicines.medid WHERE AppointmentID = {args[1]}'
+        sql = f'SELECT medsprescribed.MedID, MedName, MedCost, Quantity, Given FROM medsprescribed LEFT JOIN Medicines ON medsprescribed.medid = medicines.medid WHERE AppointmentID = {args[1]}'
         mycursor.execute(sql)
         result3 = mycursor.fetchall()
         mycursor.close()
@@ -216,10 +216,10 @@ def dbconnect(*args):
         mycursor.close()
         return True
     elif args[0] == "uploadtestresult":
-        sql = """UPDATE TestsPrescribed SET Report = %s WHERE AppointmentID = %s AND TestNo = %s"""
-        mycursor.execute(sql, (args[3], args[1], args[2]))
         sql = f'UPDATE TestsPrescribed SET StatusofTest = \'ReportCame\' WHERE AppointmentID = {args[1]} AND TestNo = {args[2]}'
         mycursor.execute(sql)
+        sql = """UPDATE TestsPrescribed SET Report = %s WHERE AppointmentID = %s AND TestNo = %s"""
+        mycursor.execute(sql, (args[3], args[1], args[2]))
         mycursor.close()
         return True
     elif args[0] == "checkroomallotted":
@@ -265,15 +265,6 @@ def dbconnect(*args):
             return True
         else:
             return False
-    elif args[0] == "showPrescribedMeds":
-        pass
-        sql = f'SELECT medsprescribed.MedID, MedName, Quantity, MedCost as UnitCost ' \
-              f'FROM medsprescribed Left join medicines on medsprescribed.MedID = medicines.MedID ' \
-              f'where AppointmentID = {args[1]}'
-        mycursor.execute(sql)
-        result = mycursor.fetchall()
-        mycursor.close()
-        return result
     elif args[0] == "givemeds":
         for i, j in args[2]:
             sql = f'UPDATE medsprescribed set Given = Given + {j} where appointmentid = {args[1]} and medid = {i}'
