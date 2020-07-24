@@ -18,7 +18,7 @@ def dbconnect(*args):
     mycursor = mydb.cursor()
     args = list(args)
     if args[0] == "record retrieve":
-        sql = f'SELECT AppointmentID, AppointmentTimestamp, Records.PatientID, Patient.PatientName, Records.DoctorID, Doctor.DocName FROM Records LEFT JOIN patient ON records.PatientID = patient.PatientID LEFT JOIN doctor ON records.DoctorID = doctor.DocID WHERE AppointmentID = {args[1]}'
+        sql = f'SELECT AppointmentID, AppointmentTimestamp, Records.PatientID, Patient.PatientName, Records.DoctorID, Doctor.DocName, IllnessName FROM Records LEFT JOIN patient ON records.PatientID = patient.PatientID LEFT JOIN doctor ON records.DoctorID = doctor.DocID WHERE AppointmentID = {args[1]}'
         mycursor.execute(sql)
         result1 = mycursor.fetchone()
         sql = f'SELECT TestName, TestCost, StatusofTest FROM testsprescribed LEFT JOIN Tests ON testsprescribed.testno = tests.testno WHERE AppointmentID = {args[1]}'
@@ -167,8 +167,9 @@ def dbconnect(*args):
             # shift ends at 6 p.m.
             elif temp.hour == 18:
                 temp = temp + datetime.timedelta(hours=15)
-            sql = f'INSERT INTO Records(PatientID, DoctorID, AppointmentTimestamp) values ({args[1]},{args[2]}, \'{args[3]}\')'
+            sql = f'INSERT INTO Records(PatientID, DoctorID, AppointmentTimestamp, IllnessName) values ({args[1]},{args[2]}, \'{args[3]}\', \' \')'
             mycursor.execute(sql)
+            mydb.commit()
             sql = 'SELECT LAST_INSERT_ID()'
             mycursor.execute(sql)
             result = mycursor.fetchone()
@@ -190,10 +191,22 @@ def dbconnect(*args):
         result = mycursor.fetchall()
         mycursor.close()
         return result
+    elif args[0] == "updateillnessname":
+        sql = f'UPDATE Records SET IllnessName = \'{args[2]}\' WHERE AppointmentID = {args[1]}'
+        mycursor.execute(sql)
+        mycursor.close()
+        return True
     elif args[0] == "prescribemeds":
         for i, j in args[2]:
-            sql = f'INSERT INTO MedsPrescribed VALUES ({args[1]}, {i}, {j}, 0)'
+            sql = f'SELECT COUNT(*) FROM medsPrescribed WHERE AppointmentID = {args[1]} AND MedID = {i}'
             mycursor.execute(sql)
+            result = mycursor.fetchone()[0]
+            if result:
+                sql = f'UPDATE medsprescribed set Quantity = Quantity + {j} where appointmentid = {args[1]} and medid = {i}'
+            else:
+                sql = f'INSERT INTO MedsPrescribed VALUES ({args[1]}, {i}, {j}, 0)'
+            mycursor.execute(sql)
+            mydb.commit()
         mycursor.close()
         return True
     elif args[0] == "prescribetests":
@@ -245,6 +258,7 @@ def dbconnect(*args):
         if result[0] is None and result[1] is not None:
             sql = f'UPDATE Accomodation SET CheckOUT = NOW() WHERE AppointmentID = {args[1]}'
             mycursor.execute(sql)
+            mydb.commit()
             sql = f'UPDATE RoomAvl SET Availability = \'True\' WHERE RoomNo = {result[1]}'
             mycursor.execute(sql)
             mycursor.close()
@@ -262,14 +276,16 @@ def dbconnect(*args):
         return result
     elif args[0] == "givemeds":
         for i, j in args[2]:
-            sql = f'UPDATE medsprescribed set Given = {j} where appointmentid = {args[1]} and medid = {i}'
+            sql = f'UPDATE medsprescribed set Given = Given + {j} where appointmentid = {args[1]} and medid = {i}'
             mycursor.execute(sql)
+        mydb.commit()
         mycursor.close()
         return True
     elif args[0] == "performtests":
         for i in args[2]:
             sql = f'update testsprescribed set StatusofTest = \'TestTaken\' where AppointmentID = {args[1]} and TestNo = {i}'
             mycursor.execute(sql)
+        mydb.commit()
         mycursor.close()
         return True
     elif args[0] == "getreport":

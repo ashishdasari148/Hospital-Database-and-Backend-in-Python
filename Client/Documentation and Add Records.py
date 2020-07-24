@@ -91,7 +91,7 @@ print(connectiontodb.transact("showtestslist"))
 # showmedslist
 print(connectiontodb.transact("showmedslist"))
 # prescribe meds parameters : "prescribemeds", appointmentid, list of [medid,quantity]
-print(connectiontodb.transact("prescribemeds", 1, [[1, 1], [4, 2], [6, 3], [20, 5]]))
+print(connectiontodb.transact("prescribemeds", 1, [[1, 1], [4, 2], [6, 3], [20, 5], [1, 3]]))
 # prescribe tests parameters : "prescribetests", appointmentid, list of tests
 print(connectiontodb.transact("prescribetests", 1, [1, 4, 6, 20]))
 # check if room already alloted for an appointment ID
@@ -104,6 +104,8 @@ print(connectiontodb.transact("bookroom", 1, 1))
 print(connectiontodb.transact("checkoutroom", 1))
 # show PrescribedMeds by appointment id
 print(connectiontodb.transact("showPrescribedMeds", 1))
+# update IllnessName
+print(connectiontodb.transact("updateillnessname", 1, "Malaria"))
 # medical shop give meds
 print(connectiontodb.transact("givemeds", 1, [[1, 1], [4, 1], [6, 2], [20, 3]]))
 # lab perform test

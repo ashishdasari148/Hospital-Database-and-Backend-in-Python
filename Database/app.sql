@@ -72,6 +72,7 @@ create table Records(
   PatientID int unsigned,
   DoctorID int unsigned,
   AppointmentTimestamp timestamp,
+  IllnessName VARCHAR(25),
   foreign key(PatientID) references Patient(PatientID) on delete cascade,
   foreign key(DoctorID) references Doctor(DocID) on delete cascade
 );
@@ -131,7 +132,7 @@ create table TestsPrescribed(
 
 DELIMITER $$
 create trigger testperformed after update on TestsPrescribed for each row begin
-if (NEW.StatusofTest = 'Taken') then
+if (NEW.StatusofTest = 'TestTaken') then
 update Patient SET TestCostUnpaid = TestCostUnpaid + (select TestCost from Tests where TestNo = NEW.TestNo) 
 where PatientID = (select patientid from records where appointmentid = NEW.AppointmentID);
 end if;
